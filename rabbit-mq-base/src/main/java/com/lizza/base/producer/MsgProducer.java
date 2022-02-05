@@ -4,11 +4,12 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Map;
@@ -48,6 +49,7 @@ public class MsgProducer<T> {
     public void send(T message, Map<String, Object> properties) {
         // 消息头
         MessageHeaders headers = new MessageHeaders(properties);
+        Message<T> msg = MessageBuilder.createMessage(message, headers);
 
         // 业务唯一标示
         CorrelationData data = new CorrelationData(UUID.fastUUID().toString(true));
@@ -58,6 +60,6 @@ public class MsgProducer<T> {
         // 消息发送
         rabbitTemplate.convertAndSend("exchange-1",
                 "springboot.rabbit",
-                message, postProcessor, data);
+                msg, postProcessor, data);
     }
 }

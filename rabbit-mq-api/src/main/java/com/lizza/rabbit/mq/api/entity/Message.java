@@ -16,8 +16,7 @@ import java.util.Map;
  * @author: lizza.liu
  * @date: 2022-02-05
  */
-@ToString
-@EqualsAndHashCode
+@Data
 public class Message implements Serializable {
 
     private static final long serialVersionUID = 6754367981961829384L;

@@ -11,5 +11,12 @@
 
     <artifactId>rabbit-mq-producer</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.lizza.rabbit.mq</groupId>
+            <artifactId>rabbit-mq-common</artifactId>
+            <version>${version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
