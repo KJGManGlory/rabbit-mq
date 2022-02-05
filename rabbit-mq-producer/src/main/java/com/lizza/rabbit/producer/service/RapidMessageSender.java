@@ -4,6 +4,7 @@ import cn.hutool.core.lang.UUID;
 import com.google.common.base.Preconditions;
 import com.lizza.rabbit.mq.api.entity.Message;
 import com.lizza.rabbit.mq.api.enums.MessageType;
+import com.lizza.rabbit.producer.util.RabbitTemplateHolder;
 import com.lizza.rabbit.producer.util.ThreadHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -24,7 +25,7 @@ import javax.annotation.Resource;
 public class RapidMessageSender implements MessageSender {
 
     @Resource
-    private RabbitTemplate rabbitTemplate;
+    private RabbitTemplateHolder rabbitTemplateHolder;
 
     @Override
     public void send(Message message) {
@@ -54,6 +55,7 @@ public class RapidMessageSender implements MessageSender {
                     message.getMessageId(), System.currentTimeMillis()));
 
             // 消息发送
+            RabbitTemplate rabbitTemplate = rabbitTemplateHolder.getRabbitTemplate(message);
             rabbitTemplate.convertAndSend(topic, routingKey, msg, data);
         });
     }
