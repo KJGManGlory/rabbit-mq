@@ -15,6 +15,15 @@ spring:
     # 发送失败退回后回调
     template:
       mandatory: true
+    listener:
+      simple:
+        # 手动 ack 确保消息被消费端消费
+        acknowledge-mode: manual
+        concurrency: 1
+        max-concurrency: 5
+        # 批量消息消费
+        prefetch: 1
+
 
 
 
