@@ -21,7 +21,8 @@ public class RabbitSimpleJobConfig {
 
 	@Resource
 	private ZookeeperRegistryCenter registryCenter;
-	
+
+	/** 记录任务的轨迹, 追踪等 **/
 	@Resource
 	private JobEventConfiguration jobEventConfiguration;
 	
