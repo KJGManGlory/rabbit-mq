@@ -1,5 +1,6 @@
 package com.lizza.rabbit.producer.entity;
 
+import com.lizza.rabbit.mq.api.entity.Message;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class BrokerMessage {
     private String messageId;
 
     /** 消息内容 **/
-    private String message;
+    private Message message;
 
     /** 重试次数 **/
     private Integer tryCount;

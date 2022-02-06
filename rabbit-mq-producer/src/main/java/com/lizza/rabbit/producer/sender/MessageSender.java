@@ -1,4 +1,4 @@
-package com.lizza.rabbit.producer.service;
+package com.lizza.rabbit.producer.sender;
 
 import com.lizza.rabbit.mq.api.entity.Message;
 import com.lizza.rabbit.mq.api.enums.MessageType;

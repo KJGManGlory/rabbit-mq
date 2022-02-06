@@ -2,7 +2,7 @@ package com.lizza.rabbit.producer.factory;
 
 import com.google.common.collect.Maps;
 import com.lizza.rabbit.mq.api.enums.MessageType;
-import com.lizza.rabbit.producer.service.MessageSender;
+import com.lizza.rabbit.producer.sender.MessageSender;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;

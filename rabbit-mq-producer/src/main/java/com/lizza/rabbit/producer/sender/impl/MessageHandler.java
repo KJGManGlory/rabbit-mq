@@ -1,4 +1,4 @@
-package com.lizza.rabbit.producer.service.impl;
+package com.lizza.rabbit.producer.sender.impl;
 
 import com.lizza.rabbit.mq.api.entity.Message;
 import com.lizza.rabbit.producer.util.RabbitTemplateHolder;

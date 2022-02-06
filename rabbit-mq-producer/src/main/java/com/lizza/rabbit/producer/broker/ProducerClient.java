@@ -5,7 +5,7 @@ import com.lizza.rabbit.mq.api.MessageProducer;
 import com.lizza.rabbit.mq.api.entity.Message;
 import com.lizza.rabbit.mq.api.exception.MessageRunTimeException;
 import com.lizza.rabbit.producer.factory.MessageSenderFactory;
-import com.lizza.rabbit.producer.service.MessageSender;
+import com.lizza.rabbit.producer.sender.MessageSender;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

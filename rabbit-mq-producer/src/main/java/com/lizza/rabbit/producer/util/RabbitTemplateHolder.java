@@ -3,6 +3,7 @@ package com.lizza.rabbit.producer.util;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.lizza.rabbit.mq.api.entity.Message;
+import com.lizza.rabbit.mq.api.enums.MessageStatus;
 import com.lizza.rabbit.mq.api.enums.MessageType;
 import com.lizza.rabbit.mq.api.exception.MessageRunTimeException;
 import com.lizza.rabbit.mq.common.serializer.Serializer;
@@ -10,11 +11,13 @@ import com.lizza.rabbit.mq.common.serializer.SerializerFactory;
 import com.lizza.rabbit.mq.common.serializer.impl.JacksonSerializerFactory;
 import com.lizza.rabbit.producer.converter.GenericMessageConverter;
 import com.lizza.rabbit.producer.converter.RabbitMessageConverter;
+import com.lizza.rabbit.producer.service.BrokerMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,9 @@ public class RabbitTemplateHolder {
 
     @Resource
     private ConnectionFactory connectionFactory;
+
+    @Resource
+    private BrokerMessageService brokerMessageService;
 
     public RabbitTemplate getRabbitTemplate(Message message) throws MessageRunTimeException {
         Preconditions.checkNotNull(message);
@@ -67,10 +73,12 @@ public class RabbitTemplateHolder {
                 if (!ack) {
                     log.error("send message failure, message id: {}, send time: {}",
                             messageId, sendTime);
+                    brokerMessageService.changeMessageStatus(messageId, MessageStatus.SEND_FAILURE);
                     return;
                 }
                 log.info("send message success, message id: {}, send time: {}",
                         messageId, sendTime);
+                brokerMessageService.changeMessageStatus(messageId, MessageStatus.SEND_SUCCESS);
             });
         }
 
