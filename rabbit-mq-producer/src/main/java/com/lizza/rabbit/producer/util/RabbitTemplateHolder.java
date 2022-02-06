@@ -1,19 +1,20 @@
 package com.lizza.rabbit.producer.util;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 import com.lizza.rabbit.mq.api.entity.Message;
 import com.lizza.rabbit.mq.api.enums.MessageType;
-import com.lizza.rabbit.mq.api.exception.MessageException;
 import com.lizza.rabbit.mq.api.exception.MessageRunTimeException;
+import com.lizza.rabbit.mq.common.serializer.Serializer;
+import com.lizza.rabbit.mq.common.serializer.SerializerFactory;
+import com.lizza.rabbit.mq.common.serializer.impl.JacksonSerializerFactory;
+import com.lizza.rabbit.producer.converter.GenericMessageConverter;
+import com.lizza.rabbit.producer.converter.RabbitMessageConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,8 @@ public class RabbitTemplateHolder {
     /** RabbitTemplate 缓存池, 根据 topic 进行缓存, 相同的 topic 复用同一个 RabbitTemplate **/
     private final Map<String, RabbitTemplate> map = Maps.newConcurrentMap();
 
+    private SerializerFactory serializerFactory = JacksonSerializerFactory.INSTANCE;
+
     @Resource
     private ConnectionFactory connectionFactory;
 
@@ -46,8 +49,13 @@ public class RabbitTemplateHolder {
         rabbitTemplate.setExchange(message.getTopic());
         rabbitTemplate.setRetryTemplate(new RetryTemplate());
         rabbitTemplate.setRoutingKey(message.getRoutingKey());
-        // todo 消息序列化方式
-        rabbitTemplate.setMessageConverter(null);
+
+        // 设置消息序列化和反序列化方式, 设置 Converter 对象
+        // fixme serializer 不需要做成单例嘛?
+        Serializer serializer = serializerFactory.create();
+        GenericMessageConverter genericConverter = new GenericMessageConverter(serializer);
+        RabbitMessageConverter rabbitConverter = new RabbitMessageConverter(genericConverter);
+        rabbitTemplate.setMessageConverter(rabbitConverter);
 
         // 除了快速消息, 其他消息都需要确认
         if (!MessageType.RAPID.equals(message.getMessageType())) {

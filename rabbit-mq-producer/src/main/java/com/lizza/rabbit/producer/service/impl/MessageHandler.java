@@ -1,9 +1,6 @@
-package com.lizza.rabbit.producer.service;
+package com.lizza.rabbit.producer.service.impl;
 
-import cn.hutool.core.lang.UUID;
-import com.google.common.base.Preconditions;
 import com.lizza.rabbit.mq.api.entity.Message;
-import com.lizza.rabbit.mq.api.enums.MessageType;
 import com.lizza.rabbit.producer.util.RabbitTemplateHolder;
 import com.lizza.rabbit.producer.util.ThreadHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -18,28 +15,16 @@ import javax.annotation.Resource;
 /**
  * @Desc:
  * @author: lizza.liu
- * @date: 2022-02-05
+ * @date: 2022-02-06
  */
 @Slf4j
 @Component
-public class RapidMessageSender implements MessageSender {
+public class MessageHandler {
 
     @Resource
     private RabbitTemplateHolder rabbitTemplateHolder;
 
-    @Override
-    public void send(Message message) {
-        Preconditions.checkNotNull(message.getTopic());
-        message.setMessageType(MessageType.RAPID);
-        handle(message);
-    }
-
-    @Override
-    public MessageType type() {
-        return MessageType.RAPID;
-    }
-
-    private void handle(Message message) {
+    public void handle(Message message) {
         ThreadHolder.ASYNC_MESSAGE_SENDER.submit(() -> {
             // Exchange
             String topic = message.getTopic();
