@@ -5,6 +5,7 @@
         <module>rabbit-mq-api</module>
         <module>rabbit-mq-producer</module>
         <module>rabbit-mq-task</module>
+        <module>rabbit-mq-es-job</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
